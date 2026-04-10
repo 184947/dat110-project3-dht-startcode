@@ -1,38 +1,22 @@
-/**
- * 
- */
 package no.hvl.dat110.util;
 
 import java.io.Serializable;
 
-/**
- * @author tdoy
- *
- */
 public class LamportClock implements Serializable {
 
-	private static final long serialVersionUID = 5030947794470613310L;
-	
-	private int clock = 0;
-	
-	
-	public void increment() {
-		
-		clock++;
-	}
-	
-	public void adjustClock(int clock) {
-		
-		this.clock = clock;
-	}
+    private static final long serialVersionUID = 5030947794470613310L;
 
-    /**
-     * @return the clock
-     */
-    public int getClock() {
-        return 0;
+    private int clock = 0;
+
+    public void increment() {
+        clock++;
     }
 
-    public void adjust(int clock) {
+    public void adjust(int receivedClock) {
+        clock = Math.max(clock, receivedClock) + 1;
+    }
+
+    public int getClock() {
+        return clock;
     }
 }
