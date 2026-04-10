@@ -25,12 +25,14 @@ public class LamportClock implements Serializable {
 		
 		this.clock = clock;
 	}
-	/**
-	 * @return the clock
-	 */
-	public int getClock() {
-		
-		return clock;
-	}
 
+    /**
+     * @return the clock
+     */
+    public int getClock() {
+        return 0;
+    }
+
+    public void adjust(int clock) {
+    }
 }
