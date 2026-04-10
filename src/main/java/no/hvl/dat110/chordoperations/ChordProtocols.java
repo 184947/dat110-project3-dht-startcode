@@ -150,32 +150,44 @@ public class ChordProtocols {
 		
 		logger.info("Update of successor and predecessor completed...bye!");
 	}
-	
-	public void fixFingerTable() {
-		
-		try {
-			logger.info("Fixing the FingerTable for the Node: "+ chordnode.getNodeName());
-	
-			// get the finger table from the chordnode (list object)
-			
-			// ensure to clear the current finger table
-			
-			// get the address size from the Hash class. This is the modulus and our address space (2^mbit = modulus)
-			
-			// get the number of bits from the Hash class. Number of bits = size of the finger table
-			
-			// iterate over the number of bits			
-			
-			// compute: k = succ(n + 2^(i)) mod 2^mbit
-			
-			// then: use chordnode to find the successor of k. (i.e., succnode = chordnode.findSuccessor(k))
-			
-			// check that succnode is not null, then add it to the finger table
 
-		} catch (RemoteException e) {
-			//
-		}
-	}
+    public void fixFingerTable() {
+
+        try {
+            logger.info("Fixing the FingerTable for the Node: " + chordnode.getNodeName());
+
+            // get the finger table from the chordnode (list object)
+            java.util.List<NodeInterface> fingtable = chordnode.getFingerTable();
+
+            // ensure to clear the current finger table
+            fingtable.clear();
+
+            // get the address size from the Hash class
+            BigInteger addresssize = no.hvl.dat110.util.Hash.addressSize();
+
+            // get the number of bits from the Hash class
+            int m = no.hvl.dat110.util.Hash.bitSize();
+
+            // iterate over the number of bits
+            for (int i = 0; i < m; i++) {
+
+                // compute: k = (n + 2^i) mod 2^m
+                BigInteger twoPower = BigInteger.valueOf(2).pow(i);
+                BigInteger k = chordnode.getNodeID().add(twoPower).mod(addresssize);
+
+                // find successor of k
+                NodeInterface succnode = chordnode.findSuccessor(k);
+
+                // add successor if not null
+                if (succnode != null) {
+                    fingtable.add(succnode);
+                }
+            }
+
+        } catch (RemoteException e) {
+            logger.error(e.getMessage());
+        }
+    }
 
 	protected NodeInterface getChordnode() {
 		return chordnode;
