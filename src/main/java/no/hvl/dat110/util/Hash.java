@@ -1,45 +1,37 @@
 package no.hvl.dat110.util;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Hash {
-	public static BigInteger hashOf(String entity) {	
-		
-		BigInteger hashint = null;
+
+    public static BigInteger hashOf(String entity) {
+
         try {
-            //mds
-            MessageDigest md = MessageDigest.getInstance("MDS");
-            //hashinput strenger
-            byte[] digest = md.digest(entity.getBytes());
-            // konverter til hex
-            String hex =toHex(digest);
-            //hex til bigInt
-            hashint = new BigInteger(hex, 16);
-        } catch (NoSuchAlgorithmException e){
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] digest = md.digest(entity.getBytes(StandardCharsets.UTF_8));
+
+            // Viktig: 1 betyr positiv BigInteger
+            return new BigInteger(1, digest);
+
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-		return hashint;
-	}
+    }
 
     public static BigInteger addressSize() {
-
-        // 2^bitSize
         return BigInteger.valueOf(2).pow(bitSize());
     }
 
     public static int bitSize() {
-
-        int digestlen = 0;
-
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            digestlen = md.getDigestLength(); // bytes
+            int digestlen = md.getDigestLength();   // 16 bytes for MD5
+            return digestlen * 8;                   // 128 bits
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-
-        return digestlen * 8; // bits
     }
 
     public static String toHex(byte[] digest) {
@@ -49,7 +41,6 @@ public class Hash {
         }
         return strbuilder.toString();
     }
-
 }
 
 
